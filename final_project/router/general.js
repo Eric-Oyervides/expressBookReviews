@@ -12,37 +12,65 @@ public_users.post("/register", (req,res) => {
 
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
-  res.json(Object.values(books));
+  const promise = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve(Object.values(books));
+    }, 1000)
+  })
+
+  promise
+    .then(result => res.status(200).json(result))
+    .catch(err => res.status(400).json(err))
 });
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
-  const book = books[req.params.isbn];
-  if (!book){
-    return res.status(404).json({message: "Book not found"});
-  }
+  const promise = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve(books[req.params.isbn])
+    }, 1000)
+  })
 
-  return res.status(200).json(book);
+  promise
+    .then(result => res.status(200).json(result))
+    .catch(err => res.status(400).json(err))
   
  });
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
-  const results = Object.values(books).filter(b => b["author"].toLowerCase() === req.params.author.toLowerCase());
-  if (results.length > 0){
-    return res.status(200).json(results);
-  }
-  return res.status(404).json({error: "author not found"});
+  const promise = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve(Object.values(books).filter(b => b["author"].toLowerCase() === req.params.author.toLowerCase()))
+    }, 1000)
+  })
+
+  promise
+    .then(result => {
+        if (result.length > 0){
+            return res.status(200).json(result);
+        }
+        return res.status(404).json({error: "author not found"});
+    })
+    .catch(err => res.status(400).json(err));
 });
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
-  const results = Object.values(books).filter(b => b["title"].toLowerCase() === req.params.title.toLowerCase());
+  const promise = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve(Object.values(books).filter(b => b["title"].toLowerCase() === req.params.title.toLowerCase()))
+    }, 1000)
+  })
 
-  if (results.length > 0) {
-    return res.status(200).json(results);
-  }
-  return res.status(404).json({error: "title not found"});
+  promise
+    .then(result => {
+        if (result.length > 0){
+            return res.status(200).json(result);
+        }
+        return res.status(404).json({error: "title not found"})
+    })
+    .catch(err => res.status(400).json(err));
 });
 
 //  Get book review

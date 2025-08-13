@@ -80,7 +80,7 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
       return res.status(200).json({message: "review updated"});
   }
   const newReview = {username: reviewName, review: req.body.review};
-  book["reviews"] = {...book["reviews"], ...newReview};
+  book["reviews"] = {...book["reviews"], [newReview.username]: newReview.review};
   return res.status(200).json({message: "review published"});
 });
 
@@ -91,9 +91,9 @@ regd_users.delete("/auth/review/:isbn", (req,res) => {
   }
   const reviews = book["reviews"];
   const reviewName = req.user.data.username;
-  const existingReview = Object.values(reviews).filter(r => r.username === reviewName);
+  const existingReview = Object.keys(reviews).filter(key => key === reviewName);
   if (existingReview.length > 0){
-    book["reviews"] = Object.values(book["reviews"]).filter(n => n !== reviewName);
+    delete book["reviews"][reviewName];
     return res.status(200).json({message: "review deleted"});
   }
   else {
